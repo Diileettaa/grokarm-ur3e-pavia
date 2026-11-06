@@ -24,9 +24,11 @@ In the second half of the event the team added a top-down stereo camera, coloure
 | Rules vs Grok baseline (81 Italian cases, 4 Nov) | Rules 76/81, Grok text mode 78/81; the safety metrics are 100% for both because the gate enforces them | README §17 |
 | STOP latency (URSim in Docker, emulated) | UI button → arm halted: median 228 ms; spoken "Fermati!" end of speech → STOP: median 857 ms | README §19 |
 | Connection to the real arm | Robot model and PolyScope version read from the dashboard; the beam direction of the gripper was measured on the arm | commits `161b06e`, `b595454` |
-| Cup detection from the top camera | Works for coloured cups; several known errors, listed below | `backend/app/vision/` |
+| Cup detection from the top camera | Works for coloured cups. Colouring the white inside of each cup made detection much more reliable. Several known errors remain, listed below. | `backend/app/vision/` |
+| Stereo depth (ELP USB stereo camera) | Calibrated on site with a checkerboard shown on a laptop screen; gives the table plane (RANSAC) and cup height | `backend/stereo_depth/`, `docs/STEREO_DEPTH.md` |
+| Pointing at a cup on the real arm | Reliable in our tests without the gripper. With the printed gripper it often works, but it fails when the planned motion brings the gripper into the arm itself. | team observation |
 | Collision checking for the printed gripper | The guard uses UR's official UR3e collision meshes + FCL for the gripper vs the arm, the table and (from `09c1e15`) the arm vs itself. In an offline comparison on 3,000 random poses, the earlier capsule model had marked 198 of 979 gripper–arm collisions as safe. | `backend/app/skills/mesh_model.py`, commit `3437a74` |
-| Cup grasp (`grab_cup`) | Planned and guarded. The last changes were checked in simulation only; a full grasp on the real arm is **not** documented. | `backend/app/skills/grasp.py` |
+| Cup grasp (`grab_cup`) | Planned and guarded, but it **never succeeded on the real arm** during the event | `backend/app/skills/grasp.py` |
 | Cup release (`place_cup`) | Implemented, **not tested** | — |
 | Side camera to confirm a grasp | Designed as a separate patch, **not merged** | — |
 
@@ -47,6 +49,7 @@ In the second half of the event the team added a top-down stereo camera, coloure
 - **Measurements.** All latency figures come from URSim under emulation. They are not real-robot values.
 - **Safety.** The software STOP is a convenience layer. It does not replace the robot's physical E-stop, which lab
   staff kept under their control during every real-arm session.
+- **Self-collision with the gripper.** With the printed gripper fitted, some planned motions still bring it into the arm. The mesh-based self-collision check added at the end of the event has not been verified on the real arm.
 
 ## Possible next steps
 
@@ -65,3 +68,6 @@ This repository merges the work of three team versions, as listed in the README:
 assistants (Cursor, Claude), as the commit authors show. The UR3e collision meshes come from
 Universal Robots' `Universal_Robots_ROS2_Description` (BSD-3-Clause, licence in `config/meshes/ur3e/`). The project code
 is under the Apache-2.0 licence in `LICENSE`.
+
+Thanks to comPVter and ctrlalt.museum for hosting the event and giving us hands-on access to the arm. Thanks also to the
+sponsor Scotti, whose rice boxes, stacked three high, served as our overhead camera mount.
