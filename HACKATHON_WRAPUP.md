@@ -16,6 +16,14 @@ spoken keyword, and none of these paths waits for the model.
 In the second half of the event the team added a top-down stereo camera, coloured paper-cup detection and a passive
 3D-printed half-ring tool. The goal was to slide the ring around a cup and lift it.
 
+## Demo video
+
+[GrokArm_Track04_Pavia.mp4](docs/GrokArm_Track04_Pavia.mp4) (2:33, English narration). It was made for the jury on
+5 November 2026 and shows the voice loop, live commands on the real UR3e with the original audio, the safety design,
+the measurements and the stereo-depth view.
+
+Team: Wu Xinran · Zakarya Mesrar · Diletta · Niccolò Gherlinzoni.
+
 ## Status at the end of the event
 
 | Part | State | Evidence |
@@ -23,6 +31,8 @@ In the second half of the event the team added a top-down stereo camera, coloure
 | Voice / text control, safety gate, five named-pose skills | Tested end to end on URSim (synthesised speech, browser, Grok Voice) | `PROJECT_STATUS.md` Phase 6 |
 | Rules vs Grok baseline (81 Italian cases, 4 Nov) | Rules 76/81, Grok text mode 78/81; the safety metrics are 100% for both because the gate enforces them | README §17 |
 | STOP latency (URSim in Docker, emulated) | UI button → arm halted: median 228 ms; spoken "Fermati!" end of speech → STOP: median 857 ms | README §19 |
+| STOP on the real UR3e | One logged run: STOP acknowledged by the robot in 23.9 ms, arm halted in 416 ms (n = 1) | session log shown in the demo video |
+| Spoken commands on the real UR3e | «Girati di 45 gradi verso destra» (turn the base 45°) and «destra sopra» (Grok offers the poses, the operator picks one) executed after spoken confirmation | demo video |
 | Connection to the real arm | Robot model and PolyScope version read from the dashboard; the beam direction of the gripper was measured on the arm | commits `161b06e`, `b595454` |
 | Cup detection from the top camera | Works for coloured cups. Colouring the white inside of each cup made detection much more reliable. Several known errors remain, listed below. | `backend/app/vision/` |
 | Stereo depth (ELP USB stereo camera) | Calibrated on site with a checkerboard shown on a laptop screen; gives the table plane (RANSAC) and cup height | `backend/stereo_depth/`, `docs/STEREO_DEPTH.md` |
@@ -46,7 +56,8 @@ In the second half of the event the team added a top-down stereo camera, coloure
 - **Tests.** Three older tests failed on the team machine at the end of the event:
   `test_real_mode_requires_explicit_config`, `test_real_mode_refuses_unverified_poses` and
   `test_execution_timeout_is_fault`.
-- **Measurements.** All latency figures come from URSim under emulation. They are not real-robot values.
+- **Measurements.** Apart from the single logged real-arm STOP (n = 1), all latency figures come from URSim under
+  emulation. They are not real-robot statistics.
 - **Safety.** The software STOP is a convenience layer. It does not replace the robot's physical E-stop, which lab
   staff kept under their control during every real-arm session.
 - **Self-collision with the gripper.** With the printed gripper fitted, some planned motions still bring it into the arm. The mesh-based self-collision check added at the end of the event has not been verified on the real arm.
