@@ -1,5 +1,7 @@
 # GrokArm UR3e — voice, vision and text control (Grok Hackathon Pavia, Track 04)
 
+> **Hackathon wrap-up, 6 Nov 2026:** what works, what was only simulated, and the known limits are in HACKATHON_WRAPUP.md. This is a copy of the team repository github.com/13032585789-spec/grokarm-ur3e.
+
 One web app to talk to the UR3e in seven languages, inspect parts with a camera and Grok Vision, and sort them into
 trays. **Every movement needs an explicit "yes" from the operator, and STOP always works.**
 
